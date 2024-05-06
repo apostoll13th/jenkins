@@ -20,6 +20,7 @@ pipeline {
         stage('Create Branch') {
             steps {
                 script {
+                    sh "git branch -D v0.2-rc1 || true"
                     sh "git checkout -b v0.2-rc1"
                 }
             }
