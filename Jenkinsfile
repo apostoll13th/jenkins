@@ -29,7 +29,7 @@ pipeline {
         stage('Push Changes') {
             steps {
                 script {
-                    withCredentials([sshUserPrivateKey(credentialsId: 'github-ssh-credentials', keyFileVariable: 'SSH_KEY')]) {
+                    withCredentials([sshUserPrivateKey(credentialsId: 'cobra', keyFileVariable: 'SSH_KEY')]) {
                         sh "git push origin --all"
                         sh "git push origin --tags"
                     }
