@@ -11,6 +11,7 @@ pipeline {
         stage('Create Tag') {
             steps {
                 script {
+                    sh "git tag -d v0.1 || true"
                     sh "git tag v0.1"
                 }
             }
