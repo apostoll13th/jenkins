@@ -27,11 +27,10 @@ pipeline {
         stage('Push Changes') {
             steps {
                 script {
-                  withCredentials([sshUserPrivateKey(credentialsId: 'github-ssh-credentials', keyFileVariable: 'SSH_KEY')]) {
-                      sh "git clone git@https://github.com/apostoll13th/jenkins"
-                      sh "git push origin --all"
-                      sh "git push origin --tags"
-}
+                    withCredentials([sshUserPrivateKey(credentialsId: 'github-ssh-credentials', keyFileVariable: 'SSH_KEY')]) {
+                        sh "git push origin --all"
+                        sh "git push origin --tags"
+                    }
                 }
             }
         }
