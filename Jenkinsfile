@@ -1,39 +1,31 @@
 pipeline {
     agent any
-
+    
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'git@github.com:apostoll13th/jenkins.git'
+                checkout scm
             }
         }
-
-        stage('Create Tag') {
+        
+        stage('Prepare') {
             steps {
                 script {
-                    sh "git tag -d v0.1 || true"
-                    sh "git tag v0.1"
+                    tag = sh(returnStdout: true, script: 'git describe --tags --always').trim()
                 }
             }
         }
-
-        stage('Create Branch') {
+        
+        stage('Build') {
             steps {
-                script {
-                    sh "git branch -D v0.2-rc1 || true"
-                    sh "git checkout -b v0.2-rc1"
-                }
+                sh "mkdir -p build-${tag}"
+                sh "cp index.html build-${tag}/"
             }
         }
-
-        stage('Push Changes') {
+        
+        stage('Deploy') {
             steps {
-                script {
-                    withCredentials([sshUserPrivateKey(credentialsId: 'cobra', keyFileVariable: 'SSH_KEY')]) {
-                        sh "git push origin --all"
-                        sh "git push origin --tags"
-                    }
-                }
+                sh "ln -sfn build-${tag} public_html"
             }
         }
     }
