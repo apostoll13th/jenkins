@@ -11,7 +11,7 @@ pipeline {
         stage('Prepare') {
             steps {
                 script {
-                    tag = sh(returnStdout: true, script: 'git describe --tags --always').trim()
+                    commit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
                 }
             }
         }
@@ -19,25 +19,25 @@ pipeline {
         stage('Build') {
             when {
                 expression {
-                    def latestTag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0').trim()
-                    return tag != latestTag
+                    def latestCommit = sh(returnStdout: true, script: 'git rev-parse HEAD~1').trim()
+                    return commit != latestCommit
                 }
             }
             steps {
-                sh "mkdir -p build-${tag}"
-                sh "cp index.html build-${tag}/"
+                sh "mkdir -p build-${commit}"
+                sh "cp index.html build-${commit}/"
             }
         }
         
         stage('Deploy') {
             when {
                 expression {
-                    def latestTag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0').trim()
-                    return tag != latestTag
+                    def latestCommit = sh(returnStdout: true, script: 'git rev-parse HEAD~1').trim()
+                    return commit != latestCommit
                 }
             }
             steps {
-                sh "ln -sfn build-${tag} public_html"
+                sh "ln -sfn build-${commit} public_html"
             }
         }
     }
